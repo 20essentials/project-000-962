@@ -5,6 +5,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
 
 <script>
   import { $ } from '@/utils/functions';
+  import Dracula from 'monaco-themes/themes/Dracula.json';
   import * as Monaco from 'monaco-editor';
   import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
   import CssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
@@ -25,6 +26,9 @@ const languages = ['html', 'css', 'javascript', 'preview'];
       return new JsWorker(); // fallback
     }
   };
+
+  // Monaco.editor.defineTheme('oneDarkPro', oneDarkProThemeData)
+  Monaco.editor.defineTheme('Dracula', Dracula)
 
   const $containerHTML = $('.editor-html') as HTMLElement;
   const $containerCSS = $('.editor-css') as HTMLElement;
@@ -50,7 +54,8 @@ const languages = ['html', 'css', 'javascript', 'preview'];
      const editor = Monaco.editor.create(language.container, {
       value: language.value,
       language: languageName,
-      ...COMMON_OPTIONS_EDITOR
+      ...COMMON_OPTIONS_EDITOR,
+      theme: 'Dracula'
     });
 
     editor.onDidChangeModelContent(updateIframe)
@@ -142,7 +147,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
         }
 
         &.editor-preview {
-          background-color: #fff;
+          background-color: #000;
         }
       }
 
