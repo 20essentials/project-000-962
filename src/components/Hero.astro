@@ -35,32 +35,36 @@ const languages = ['html', 'css', 'javascript', 'preview'];
   let cssValue = INITIAL_CSS;
   let jsValue = INITIAL_JS;
 
-  const htmlEditor = Monaco.editor.create($containerHTML, {
-    value: htmlValue,
-    language: 'html',
-    ...COMMON_OPTIONS_EDITOR
-  });
+  interface LanguageConfig {
+    container: HTMLElement;
+    value: string;
+  }
 
-  const cssEditor = Monaco.editor.create($containerCSS, {
-    value: cssValue,
-    language: 'css',
-    ...COMMON_OPTIONS_EDITOR
-  });
+  const allLanguages: [string, LanguageConfig][] = [
+    ['html', { container: $containerHTML, value: htmlValue }],
+    ['css', { container: $containerCSS, value: cssValue }],
+    ['javascript', { container: $containerJS, value: jsValue }]
+  ];
 
-  const javascriptEditor = Monaco.editor.create($containerJS, {
-    value: jsValue,
-    language: 'javascript',
-    ...COMMON_OPTIONS_EDITOR
-  });
+  const editors = allLanguages.map(([languageName, language]) => {
+     const editor = Monaco.editor.create(language.container, {
+      value: language.value,
+      language: languageName,
+      ...COMMON_OPTIONS_EDITOR
+    });
 
-  htmlEditor.onDidChangeModelContent(updateIframe);
-  cssEditor.onDidChangeModelContent(updateIframe);
-  javascriptEditor.onDidChangeModelContent(updateIframe);
+    editor.onDidChangeModelContent(updateIframe)
+
+    return editor;
+  })
+
+  const [htmlEditor, cssEditor, javascriptEditor] = editors;
 
   function updateIframe() {
     const htmlValue = htmlEditor.getValue();
     const cssValue = cssEditor.getValue();
     const jsValue = javascriptEditor.getValue();
+
     $iframe.setAttribute(
       'srcDoc',
       `
