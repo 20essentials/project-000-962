@@ -1,0 +1,190 @@
+---
+import { baseUrl } from '@/utils/functions';
+const languages = ['html', 'css', 'javascript', 'preview'];
+---
+
+<script>
+  import { $ } from '@/utils/functions';
+  import * as Monaco from 'monaco-editor';
+  import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
+  import CssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
+  import JsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+  import { emmetHTML, emmetCSS, emmetJSX } from 'emmet-monaco-es';
+  import { INITIAL_CSS, INITIAL_HTML, INITIAL_JS } from '@/utils/consts';
+
+  window.MonacoEnvironment = {
+    getWorker(_, label) {
+      if (label === 'html') return new HtmlWorker();
+      if (label === 'javascript') return new JsWorker();
+      if (label === 'css') return new CssWorker();
+      return new JsWorker(); // fallback
+    }
+  };
+
+  const $containerHTML = $('.editor-html') as HTMLElement;
+  const $containerCSS = $('.editor-css') as HTMLElement;
+  const $containerJS = $('.editor-javascript') as HTMLElement;
+  const $iframe = $('.editor-preview') as HTMLIFrameElement;
+
+  let htmlValue = INITIAL_HTML;
+  let cssValue = INITIAL_CSS;
+  let jsValue = INITIAL_JS;
+
+  const commonOptionsEditor: Monaco.editor.IStandaloneEditorConstructionOptions =
+    {
+      fontSize: 18,
+      theme: 'vs-dark',
+      automaticLayout: true,
+      fixedOverflowWidgets: true,
+      scrollBeyondLastLine: true,
+      fontFamily: `'VictorMonoNerdFontRegular', 'Cascadia Code PL', 'Menlo', 'Monaco', 'Courier New', 'monospace'`,
+      fontLigatures: 'on',
+      tabSize: 2,
+      minimap: {
+        enabled: false
+      },
+      cursorBlinking: 'blink',
+      cursorSmoothCaretAnimation: 'off',
+      roundedSelection: true,
+      readOnly: false,
+      scrollbar: {
+        useShadows: false,
+        verticalHasArrows: false,
+        horizontalHasArrows: false,
+        vertical: 'visible',
+        horizontal: 'auto',
+        verticalScrollbarSize: 12,
+        horizontalScrollbarSize: 12
+      },
+      insertSpaces: true,
+      smoothScrolling: true,
+      guides: {
+        bracketPairs: false
+      },
+      matchBrackets: 'never',
+      overviewRulerLanes: 0,
+
+      stickyScroll: {
+        enabled: false
+      },
+      wordWrap: 'on'
+    };
+
+  const htmlEditor = Monaco.editor.create($containerHTML, {
+    value: htmlValue,
+    language: 'html',
+    ...commonOptionsEditor
+  });
+
+  const cssEditor = Monaco.editor.create($containerCSS, {
+    value: cssValue,
+    language: 'css',
+    ...commonOptionsEditor
+  });
+
+  const javascriptEditor = Monaco.editor.create($containerJS, {
+    value: jsValue,
+    language: 'javascript',
+    ...commonOptionsEditor
+  });
+
+  htmlEditor.onDidChangeModelContent(updateIframe);
+  cssEditor.onDidChangeModelContent(updateIframe);
+  javascriptEditor.onDidChangeModelContent(updateIframe);
+
+  function updateIframe() {
+    const htmlValue = htmlEditor.getValue();
+    const cssValue = cssEditor.getValue();
+    const jsValue = javascriptEditor.getValue();
+    $iframe.setAttribute(
+      'srcDoc',
+      `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Preview</title>
+        <style>${cssValue}</style>
+      </head>
+      <body>
+        ${htmlValue}<script>${jsValue}<\/script>
+      </body>
+      </html>
+    `
+    );
+  }
+
+  emmetHTML(Monaco, ['html']);
+  emmetCSS(Monaco, ['css', 'scss']);
+  emmetJSX(Monaco, ['javascript', 'typescript']);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateIframe();
+  });
+</script>
+
+<section>
+  {
+    languages.map(language => {
+      const isPreview = language === 'preview';
+      const TagElement = isPreview ? 'iframe' : 'article';
+      const srcImage = baseUrl(`assets/${language}.svg`);
+      return (
+        <aside class='container-one-editor'>
+          <TagElement class={`editor editor-${language}`} />
+          {!isPreview && (
+            <img class='am-logo' src={srcImage} alt={`Image ${language}`} />
+          )}
+        </aside>
+      );
+    })
+  }
+</section>
+
+<style>
+  section {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+
+    .container-one-editor {
+      position: relative;
+
+      .editor {
+        width: 100%;
+        height: 100%;
+        resize: none;
+        border: 0.1vmax solid #fff2;
+        font-size: 1.2vmax;
+        padding: 1vmax;
+        display: flex;
+        position: absolute;
+        outline: none;
+        background-color: #000;
+        overflow: hidden;
+
+        .monaco-editor {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        &.editor-preview {
+          background-color: #fff;
+        }
+      }
+
+      .am-logo {
+        position: absolute;
+        width: 3vmax;
+        height: 3vmax;
+        right: 2.5vmax;
+        bottom: 2vmax;
+        z-index: 100;
+      }
+    }
+  }
+</style>

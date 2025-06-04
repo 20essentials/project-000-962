@@ -1,0 +1,41 @@
+---
+import '@/styles/global.css';
+import { baseUrl } from '@/utils/functions';
+const favicon = baseUrl('/assets/favicon.webp')
+---
+
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width' />
+    <link rel='icon' type='image/svg+xml' href={favicon} />
+    <title>Simple Editor</title>
+  </head>
+  <body>
+    <div class='background-div'></div>
+    <slot />
+  </body>
+</html>
+
+<style>
+  .background-div {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    background: radial-gradient(
+      125% 125% at 50% 10%,
+      #fff 40%,
+      var(--global-blue) 100%
+    );
+  }
+</style>
+
+<script>
+  window.addEventListener('resize', e => {
+    document.title = `${window.innerWidth}`;
+  });
+</script>
