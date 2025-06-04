@@ -10,7 +10,12 @@ const languages = ['html', 'css', 'javascript', 'preview'];
   import CssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
   import JsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
   import { emmetHTML, emmetCSS, emmetJSX } from 'emmet-monaco-es';
-  import { INITIAL_CSS, INITIAL_HTML, INITIAL_JS } from '@/utils/consts';
+  import {
+    INITIAL_CSS,
+    INITIAL_HTML,
+    INITIAL_JS,
+    COMMON_OPTIONS_EDITOR
+  } from '@/utils/consts';
 
   window.MonacoEnvironment = {
     getWorker(_, label) {
@@ -30,62 +35,22 @@ const languages = ['html', 'css', 'javascript', 'preview'];
   let cssValue = INITIAL_CSS;
   let jsValue = INITIAL_JS;
 
-  const commonOptionsEditor: Monaco.editor.IStandaloneEditorConstructionOptions =
-    {
-      fontSize: 18,
-      theme: 'vs-dark',
-      automaticLayout: true,
-      fixedOverflowWidgets: true,
-      scrollBeyondLastLine: true,
-      fontFamily: `'VictorMonoNerdFontRegular', 'Cascadia Code PL', 'Menlo', 'Monaco', 'Courier New', 'monospace'`,
-      fontLigatures: 'on',
-      tabSize: 2,
-      minimap: {
-        enabled: false
-      },
-      cursorBlinking: 'blink',
-      cursorSmoothCaretAnimation: 'off',
-      roundedSelection: true,
-      readOnly: false,
-      scrollbar: {
-        useShadows: false,
-        verticalHasArrows: false,
-        horizontalHasArrows: false,
-        vertical: 'visible',
-        horizontal: 'auto',
-        verticalScrollbarSize: 12,
-        horizontalScrollbarSize: 12
-      },
-      insertSpaces: true,
-      smoothScrolling: true,
-      guides: {
-        bracketPairs: false
-      },
-      matchBrackets: 'never',
-      overviewRulerLanes: 0,
-
-      stickyScroll: {
-        enabled: false
-      },
-      wordWrap: 'on'
-    };
-
   const htmlEditor = Monaco.editor.create($containerHTML, {
     value: htmlValue,
     language: 'html',
-    ...commonOptionsEditor
+    ...COMMON_OPTIONS_EDITOR
   });
 
   const cssEditor = Monaco.editor.create($containerCSS, {
     value: cssValue,
     language: 'css',
-    ...commonOptionsEditor
+    ...COMMON_OPTIONS_EDITOR
   });
 
   const javascriptEditor = Monaco.editor.create($containerJS, {
     value: jsValue,
     language: 'javascript',
-    ...commonOptionsEditor
+    ...COMMON_OPTIONS_EDITOR
   });
 
   htmlEditor.onDidChangeModelContent(updateIframe);
