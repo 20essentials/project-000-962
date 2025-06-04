@@ -85,7 +85,6 @@ export const COMMON_OPTIONS_EDITOR: Monaco.editor.IStandaloneEditorConstructionO
   {
     fontSize: 18,
     automaticLayout: true,
-    fixedOverflowWidgets: true,
     scrollBeyondLastLine: true,
     fontFamily: `'VictorMonoNerdFontRegular', 'Cascadia Code PL', 'Menlo', 'Monaco', 'Courier New', 'monospace'`,
     fontLigatures: 'on',
@@ -117,5 +116,7 @@ export const COMMON_OPTIONS_EDITOR: Monaco.editor.IStandaloneEditorConstructionO
       enabled: false
     },
     wordWrap: 'wordWrapColumn',
-    wordWrapColumn: 60
+    wordWrapColumn: 60,
+    autoClosingQuotes: 'always',
+    autoClosingBrackets: 'always'
   };
