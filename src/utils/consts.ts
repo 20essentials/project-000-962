@@ -118,5 +118,7 @@ export const COMMON_OPTIONS_EDITOR: Monaco.editor.IStandaloneEditorConstructionO
     wordWrap: 'wordWrapColumn',
     wordWrapColumn: 60,
     autoClosingQuotes: 'always',
-    autoClosingBrackets: 'always'
+    autoClosingBrackets: 'always',
+    lineNumbers: 'on',
+    lineNumbersMinChars: 4
   };

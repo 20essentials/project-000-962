@@ -17,6 +17,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
     INITIAL_JS,
     COMMON_OPTIONS_EDITOR
   } from '@/utils/consts';
+  import { encode, decode } from 'js-base64'
 
   window.MonacoEnvironment = {
     getWorker(_, label) {
@@ -37,9 +38,12 @@ const languages = ['html', 'css', 'javascript', 'preview'];
   const $containerJS = $('.editor-javascript') as HTMLElement;
   const $iframe = $('.editor-preview') as HTMLIFrameElement;
 
-  let htmlValue = INITIAL_HTML;
-  let cssValue = INITIAL_CSS;
-  let jsValue = INITIAL_JS;
+  let htmlValue = '';
+  let cssValue = '';
+  let jsValue = '';
+  // let htmlValue =  INITIAL_HTML;
+  // let cssValue =  INITIAL_CSS;
+  // let jsValue =  INITIAL_JS;
 
   interface LanguageConfig {
     container: HTMLElement;
@@ -82,7 +86,11 @@ const languages = ['html', 'css', 'javascript', 'preview'];
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Preview</title>
-        <style>${cssValue}</style>
+        <style>
+          body {
+            background-color: #fff;
+          }
+          ${cssValue}</style>
       </head>
       <body>
         ${htmlValue}<script>${jsValue}<\/script>
