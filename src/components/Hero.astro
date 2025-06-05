@@ -4,13 +4,14 @@ const languages = ['html', 'css', 'javascript', 'preview'];
 ---
 
 <script>
+  import { encode, decode } from 'js-base64';
   import { $ } from '@/utils/functions';
   import Dracula from 'monaco-themes/themes/Dracula.json';
   import * as Monaco from 'monaco-editor';
   import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
   import CssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
   import JsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
-  import { debounce } from '@/utils/functions';
+  import { debounce, updateUrlQueries } from '@/utils/functions';
   import { useEmmet } from '@/utils/emmet';
   import {
     INITIAL_CSS,
@@ -18,7 +19,6 @@ const languages = ['html', 'css', 'javascript', 'preview'];
     INITIAL_JS,
     COMMON_OPTIONS_EDITOR
   } from '@/utils/consts';
-  import { encode, decode } from 'js-base64';
 
   window.MonacoEnvironment = {
     getWorker(_, label) {
@@ -39,9 +39,16 @@ const languages = ['html', 'css', 'javascript', 'preview'];
   const $containerJS = $('.editor-javascript') as HTMLElement;
   const $iframe = $('.editor-preview') as HTMLIFrameElement;
 
-  let htmlValue = '';
-  let cssValue = '';
-  let jsValue = '';
+  const currentUrl = new URL(window.location.href);
+  const [htmlCodificado, cssCodificado, jsCodificado] = [
+    'HTML',
+    'CSS',
+    'JavaScript'
+  ].map(lang => currentUrl.searchParams.get(lang));
+
+  let htmlValue = htmlCodificado ? decode(htmlCodificado) : '';
+  let cssValue = cssCodificado ? decode(cssCodificado) : '';
+  let jsValue = jsCodificado ? decode(jsCodificado) : '';
   // let htmlValue =  INITIAL_HTML;
   // let cssValue =  INITIAL_CSS;
   // let jsValue =  INITIAL_JS;
@@ -74,9 +81,10 @@ const languages = ['html', 'css', 'javascript', 'preview'];
   useEmmet(Monaco, htmlEditor);
 
   function updateIframe() {
-    const htmlValue = htmlEditor.getValue();
-    const cssValue = cssEditor.getValue();
-    const jsValue = javascriptEditor.getValue();
+    const htmlValue = htmlEditor.getValue().trim();
+    const cssValue = cssEditor.getValue().trim();
+    const jsValue = javascriptEditor.getValue().trim();
+    updateUrlQueries({ htmlValue, cssValue, jsValue });
 
     $iframe.setAttribute(
       'srcDoc',
@@ -92,11 +100,14 @@ const languages = ['html', 'css', 'javascript', 'preview'];
           *::after,
           *::before {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
           }
 
           body {
             background-color: #fff;
             margin: 0;
+            padding: 1vmax;
           }
 
           ${cssValue}</style>
