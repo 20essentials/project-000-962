@@ -10,12 +10,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
   import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
   import CssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
   import JsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
-  import {
-    emmetHTML,
-    emmetCSS,
-    emmetJSX,
-    expandAbbreviation
-  } from 'emmet-monaco-es';
+  import { useEmmet } from '@/utils/emmet';
   import {
     INITIAL_CSS,
     INITIAL_HTML,
@@ -32,8 +27,10 @@ const languages = ['html', 'css', 'javascript', 'preview'];
     }
   };
 
-  //@ts-ignore
-  Monaco.editor.defineTheme('Dracula', Dracula);
+  Monaco.editor.defineTheme(
+    'Dracula',
+    Dracula as Monaco.editor.IStandaloneThemeData
+  );
 
   const $containerHTML = $('.editor-html') as HTMLElement;
   const $containerCSS = $('.editor-css') as HTMLElement;
@@ -69,34 +66,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
   });
 
   const [htmlEditor, cssEditor, javascriptEditor] = editors;
-
-  //Autocomplete emmet solo con Tab
-  htmlEditor.addCommand(Monaco.KeyCode.Tab, () => {
-    const model = htmlEditor.getModel();
-    const selection = htmlEditor.getSelection();
-    if (!model || !selection) return;
-
-    const position = selection.getStartPosition();
-    const lineContent = model.getLineContent(position.lineNumber);
-    const prefix = lineContent.slice(0, position.column - 1).trim();
-
-    // Evita expandir si no hay texto o si tiene espacios (no es una abreviación válida)
-    if (!prefix || /\s/.test(prefix)) return;
-
-    const expanded = expandAbbreviation(prefix, { syntax: 'html' });
-    if (!expanded) return;
-
-    const range = new Monaco.Range(
-      position.lineNumber,
-      lineContent.lastIndexOf(prefix) + 1,
-      position.lineNumber,
-      position.column
-    );
-
-    htmlEditor.executeEdits('', [
-      { range, text: expanded, forceMoveMarkers: true }
-    ]);
-  });
+  useEmmet(Monaco, htmlEditor);
 
   function updateIframe() {
     const htmlValue = htmlEditor.getValue();
@@ -121,10 +91,6 @@ const languages = ['html', 'css', 'javascript', 'preview'];
     `
     );
   }
-
-  emmetHTML(Monaco, ['html']);
-  emmetCSS(Monaco, ['css', 'scss']);
-  emmetJSX(Monaco, ['javascript', 'typescript']);
 
   document.addEventListener('DOMContentLoaded', () => {
     updateIframe();
