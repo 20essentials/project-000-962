@@ -1,5 +1,6 @@
 ---
 import { baseUrl } from '@/utils/functions';
+import MenuTooltip from '@/components/MenuTooltip.astro';
 const languages = ['html', 'css', 'javascript', 'preview'];
 ---
 
@@ -46,12 +47,9 @@ const languages = ['html', 'css', 'javascript', 'preview'];
     'JavaScript'
   ].map(lang => currentUrl.searchParams.get(lang));
 
-  let htmlValue = htmlCodificado ? decode(htmlCodificado) : '';
-  let cssValue = cssCodificado ? decode(cssCodificado) : '';
-  let jsValue = jsCodificado ? decode(jsCodificado) : '';
-  // let htmlValue =  INITIAL_HTML;
-  // let cssValue =  INITIAL_CSS;
-  // let jsValue =  INITIAL_JS;
+  let htmlValue = INITIAL_HTML;
+  let cssValue = INITIAL_CSS;
+  let jsValue = INITIAL_JS;
 
   interface LanguageConfig {
     container: HTMLElement;
@@ -106,8 +104,6 @@ const languages = ['html', 'css', 'javascript', 'preview'];
 
           body {
             background-color: #fff;
-            margin: 0;
-            padding: 1vmax;
           }
 
           ${cssValue}</style>
@@ -123,9 +119,34 @@ const languages = ['html', 'css', 'javascript', 'preview'];
   document.addEventListener('DOMContentLoaded', () => {
     updateIframe();
   });
+
+  const $modalPreview = $('.modal-preview') as HTMLElement;
+  window.addEventListener('keydown', e => {
+    const { ctrlKey, metaKey, key } = e;
+    if ((ctrlKey || metaKey) && key.toLowerCase() === 'p') {
+      e.preventDefault();
+      $modalPreview.innerHTML = '';
+      if ($modalPreview.classList.contains('open')) {
+        $modalPreview.classList.remove('open');
+        return;
+      }
+      $modalPreview?.classList.add('open');
+      const $iframe = $('.editor-preview')?.cloneNode(true) as HTMLIFrameElement;
+      if ($iframe) {
+        $modalPreview?.appendChild($iframe);
+      }
+    }
+
+    if (key == 'Escape') {
+      if ($modalPreview.classList.contains('open')) {
+        $modalPreview.classList.remove('open');
+        return;
+      }
+    }
+  });
 </script>
 
-<section>
+<section class='main-section'>
   {
     languages.map(language => {
       const isPreview = language === 'preview';
@@ -141,10 +162,48 @@ const languages = ['html', 'css', 'javascript', 'preview'];
       );
     })
   }
+
+  <article class='modal-preview'>
+    
+  </article>
+
+  <MenuTooltip />
 </section>
 
 <style>
-  section {
+  .modal-preview {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    z-index: 100;
+    background-color: #0004;
+    backdrop-filter: blur(0.1vmax);
+    display: flex;
+    transform: scale(0);
+    content-visibility: auto;
+    transition: transform 0.3s ease;
+    transform-origin: 78% 73%;
+    
+    &.open {
+      transform: scale(1);
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      resize: none;
+      border: 0.1vmax solid #fff2;
+      font-size: 1.2vmax;
+      padding: 2vmax;
+      display: flex;
+      position: absolute;
+      outline: none;
+      background-color: #000;
+      overflow: hidden;
+    }
+  }
+
+  .main-section {
     height: 100vh;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -152,6 +211,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
 
     .container-one-editor {
       position: relative;
+      user-select: none;
 
       .editor {
         width: 100%;
@@ -185,6 +245,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
         right: 2.5vmax;
         bottom: 2vmax;
         z-index: 100;
+        pointer-events: none;
       }
     }
   }
