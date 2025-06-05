@@ -23,26 +23,23 @@ export function updateUrlQueries({
   cssValue: string;
   jsValue: string;
 }) {
-  const languageToUrl = [
+  const url = new URL(window.location.href);
+  const params = url.searchParams;
+
+  const values: [string, string][] = [
     ['HTML', htmlValue],
     ['CSS', cssValue],
     ['JavaScript', jsValue]
   ];
 
-  const languagesWithValue = languageToUrl.filter(([_, languageValue]) => {
-    if (languageValue !== '') return true;
-    if (languageValue.length > 1) return true;
-    return false;
+  values.forEach(([key, value]) => {
+    if (value && value.length > 0) {
+      params.set(key, encode(value));
+    }
   });
 
-  const url = new URL(window.location.href);
-  const urlParams = url.searchParams;
-
-  languagesWithValue.forEach(([languageName, languageValue]) => {
-    urlParams.set(languageName, encode(languageValue));
-  });
-  const [, hashedCode] = url.href.split('/?');
-  if (hashedCode) {
-    window.history.pushState(null, '', `/?${hashedCode}`);
-  }
+  // Actualizar solo la query, manteniendo el pathname actual
+  const newUrl = `${window.location.pathname}?${params.toString()}`;
+  window.history.replaceState(null, '', newUrl);
 }
+
