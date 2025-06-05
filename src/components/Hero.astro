@@ -10,6 +10,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
   import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
   import CssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
   import JsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+  import { debounce } from '@/utils/functions';
   import { useEmmet } from '@/utils/emmet';
   import {
     INITIAL_CSS,
@@ -17,7 +18,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
     INITIAL_JS,
     COMMON_OPTIONS_EDITOR
   } from '@/utils/consts';
-  import { encode, decode } from 'js-base64'
+  import { encode, decode } from 'js-base64';
 
   window.MonacoEnvironment = {
     getWorker(_, label) {
@@ -64,7 +65,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
       theme: 'Dracula'
     });
 
-    editor.onDidChangeModelContent(updateIframe);
+    editor.onDidChangeModelContent(debounce(updateIframe, 200));
 
     return editor;
   });
@@ -87,9 +88,17 @@ const languages = ['html', 'css', 'javascript', 'preview'];
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Preview</title>
         <style>
+          *,
+          *::after,
+          *::before {
+            box-sizing: border-box;
+          }
+
           body {
             background-color: #fff;
+            margin: 0;
           }
+
           ${cssValue}</style>
       </head>
       <body>
