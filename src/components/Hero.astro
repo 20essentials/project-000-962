@@ -140,6 +140,13 @@ const languages = ['html', 'css', 'javascript', 'preview'];
       }
     }
   });
+
+  document.addEventListener('click', e => {
+    const target = e.target as HTMLElement;
+    if (target.matches('.thePreviewLogo')) {
+      closeOrOpenModal();
+    }
+  });
 </script>
 
 <section class='main-section'>
@@ -148,12 +155,11 @@ const languages = ['html', 'css', 'javascript', 'preview'];
       const isPreview = language === 'preview';
       const TagElement = isPreview ? 'iframe' : 'article';
       const srcImage = baseUrl(`assets/${language}.svg`);
+      const classNameLogo = `am-logo ${isPreview ? 'thePreviewLogo' : ''}`;
       return (
         <aside class='container-one-editor'>
           <TagElement class={`editor editor-${language}`} />
-          {!isPreview && (
-            <img class='am-logo' src={srcImage} alt={`Image ${language}`} />
-          )}
+          <img class={classNameLogo} src={srcImage} alt={`Image ${language}`} />
         </aside>
       );
     })
@@ -233,6 +239,14 @@ const languages = ['html', 'css', 'javascript', 'preview'];
         }
       }
 
+      &:hover {
+        .am-logo {
+          &.thePreviewLogo {
+            opacity: 1;
+          }
+        }
+      }
+
       .am-logo {
         position: absolute;
         width: 3vmax;
@@ -241,6 +255,12 @@ const languages = ['html', 'css', 'javascript', 'preview'];
         bottom: 2vmax;
         z-index: 100;
         pointer-events: none;
+
+        &.thePreviewLogo {
+          opacity: 0;
+          pointer-events: auto;
+          transition: opacity .3s ease-in-out;
+        }
       }
     }
   }
