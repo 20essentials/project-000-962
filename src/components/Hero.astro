@@ -47,12 +47,12 @@ const languages = ['html', 'css', 'javascript', 'preview'];
     'JavaScript'
   ].map(lang => currentUrl.searchParams.get(lang));
 
-  let htmlValue = htmlCodificado ? decode(htmlCodificado) : '';
-  let cssValue = cssCodificado ? decode(cssCodificado) : '';
-  let jsValue = jsCodificado ? decode(jsCodificado) : '';
-  // let htmlValue = INITIAL_HTML;
-  // let cssValue = INITIAL_CSS;
-  // let jsValue = INITIAL_JS;
+  // let htmlValue = htmlCodificado ? decode(htmlCodificado) : '';
+  // let cssValue = cssCodificado ? decode(cssCodificado) : '';
+  // let jsValue = jsCodificado ? decode(jsCodificado) : '';
+  let htmlValue = INITIAL_HTML;
+  let cssValue = INITIAL_CSS;
+  let jsValue = INITIAL_JS;
 
   interface LanguageConfig {
     container: HTMLElement;
@@ -243,6 +243,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
         .am-logo {
           &.thePreviewLogo {
             opacity: 1;
+            background-color: #fff1;
           }
         }
       }
