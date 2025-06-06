@@ -2,7 +2,7 @@
 import { baseUrl } from '@/utils/functions';
 import MenuTooltip from '@/components/MenuTooltip.astro';
 import ModalPreview from '@/components/ModalPreview.astro';
-const languages = ['html', 'css', 'javascript', 'preview'];
+const editorsNames = ['html', 'css', 'javascript', 'preview'];
 ---
 
 <script>
@@ -29,7 +29,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
       if (label === 'html') return new HtmlWorker();
       if (label === 'javascript') return new JsWorker();
       if (label === 'css') return new CssWorker();
-      return new JsWorker(); // fallback
+      return new JsWorker(); 
     }
   };
 
@@ -165,7 +165,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
 
 <section class='main-section'>
   {
-    languages.map(language => {
+    editorsNames.map(language => {
       const isPreview = language === 'preview';
       const TagElement = isPreview ? 'iframe' : 'article';
       const srcImage = baseUrl(`/assets/${language}.svg`);

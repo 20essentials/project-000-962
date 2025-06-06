@@ -1,7 +1,8 @@
 import * as Monaco from 'monaco-editor';
 
+
 export const INITIAL_HTML = `<main class="bg">
-  <h1></h1>
+  <aside class="inner"></aside>
 </main>`;
 
 export const INITIAL_CSS = `*,
@@ -20,16 +21,16 @@ export const INITIAL_CSS = `*,
   background-position: center;
   background-size: cover;
 
-  h1 {
+  .inner {
     z-index: 9999;
     mix-blend-mode: overlay;
     inset: 0;
     position: absolute;
-    animation: moveTitle 10s ease infinite alternate;
+    animation: moveInner 10s ease infinite alternate;
   }
 }
 
-@keyframes moveTitle {
+@keyframes moveInner {
   0% {
     background-color: #f0f;
   }
@@ -81,8 +82,7 @@ function drawStars() {
   requestAnimationFrame(drawStars);
 }`;
 
-export const INITIAL_JS = `const nombre = "dominic";
-console.log(nombre);`
+export const INITIAL_JS = `const message = "Keep calm and code on."`
 
 export const COMMON_OPTIONS_EDITOR: Monaco.editor.IStandaloneEditorConstructionOptions =
   {
