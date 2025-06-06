@@ -1,8 +1,12 @@
 export const $ = (el: string) => document.querySelector(el);
 export const $$ = (el: string) => document.querySelectorAll(el);
+const numsKeys = ['1', '2', '3', '4'];
+const languages = ['html', 'css', 'javascript', 'preview'];
 import { encode } from 'js-base64';
+// import * as monaco from 'monaco-editor';
 
 export function baseUrl(path: string) {
+  return path;
   return new URL(path.replace(/^\/+/, ''), import.meta.env.SITE).toString();
 }
 
@@ -59,3 +63,31 @@ export function closeOrOpenModal() {
     $modalPreview?.appendChild($iframe);
   }
 }
+
+export function addHandlersKeyDowns() {
+  window.addEventListener('keydown', e => {
+    const { ctrlKey, metaKey, altKey, key } = e;
+    if ((ctrlKey || metaKey) && key.toLowerCase() === 'p') {
+      e.preventDefault();
+      closeOrOpenModal();
+    }
+    if (key == 'Escape') {
+      const $modalPreview = $('.modal-preview') as HTMLElement;
+      if ($modalPreview?.classList.contains('open')) {
+        const $menuTooltip = $('.menu-tooltip');
+        $modalPreview.classList.remove('open');
+        $menuTooltip?.classList.remove('menul-tooltip-open');
+        return;
+      }
+    }
+
+    if ((altKey || ctrlKey) && numsKeys.includes(key)) {
+      e.preventDefault();
+      const numKey = Number(key);
+      const editorName = languages[numKey - 1];
+      const $editorTarget = $(`.editor-${editorName}`);
+      $editorTarget?.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+}
+

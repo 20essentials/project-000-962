@@ -51,7 +51,7 @@ export const INITIAL_CSS = `*,
   }
 }`;
 
-export const INITIAL_JS = `function generateStars() {
+export const INITIAL_JS_ = `function generateStars() {
   stars = Array.from({ length: STAR_COUNT }, () => ({
     x: Math.random() * width,
     y: Math.random() * height,
@@ -81,9 +81,12 @@ function drawStars() {
   requestAnimationFrame(drawStars);
 }`;
 
+export const INITIAL_JS = `const nombre = "dominic";
+console.log(nombre);`
+
 export const COMMON_OPTIONS_EDITOR: Monaco.editor.IStandaloneEditorConstructionOptions =
   {
-    fontSize: 18,
+    fontSize: 16,
     automaticLayout: true,
     scrollBeyondLastLine: true,
     fontFamily: `'VictorMonoNerdFontRegular', 'Cascadia Code PL', 'Menlo', 'Monaco', 'Courier New', 'monospace'`,
@@ -102,8 +105,8 @@ export const COMMON_OPTIONS_EDITOR: Monaco.editor.IStandaloneEditorConstructionO
       horizontalHasArrows: false,
       vertical: 'visible',
       horizontal: 'auto',
-      verticalScrollbarSize: 12,
-      horizontalScrollbarSize: 12
+      verticalScrollbarSize: 9,
+      horizontalScrollbarSize: 9
     },
     insertSpaces: true,
     smoothScrolling: true,

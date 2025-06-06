@@ -7,7 +7,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
 
 <script>
   import { encode, decode } from 'js-base64';
-  import { $, closeOrOpenModal } from '@/utils/functions';
+  import { $, closeOrOpenModal, addHandlersKeyDowns } from '@/utils/functions';
   import Dracula from 'monaco-themes/themes/Dracula.json';
   import * as Monaco from 'monaco-editor';
   import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
@@ -124,30 +124,14 @@ const languages = ['html', 'css', 'javascript', 'preview'];
     updateIframe();
   });
 
-  window.addEventListener('keydown', e => {
-    const { ctrlKey, metaKey, key } = e;
-    if ((ctrlKey || metaKey) && key.toLowerCase() === 'p') {
-      e.preventDefault();
-      closeOrOpenModal();
-    }
-
-    if (key == 'Escape') {
-      const $modalPreview = $('.modal-preview') as HTMLElement;
-      if ($modalPreview?.classList.contains('open')) {
-        const $menuTooltip = $('.menu-tooltip');
-        $modalPreview.classList.remove('open');
-        $menuTooltip?.classList.remove('menul-tooltip-open');
-        return;
-      }
-    }
-  });
-
   document.addEventListener('click', e => {
     const target = e.target as HTMLElement;
     if (target.matches('.thePreviewLogo')) {
       closeOrOpenModal();
     }
   });
+
+  addHandlersKeyDowns();
 </script>
 
 <section class='main-section'>
@@ -155,7 +139,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
     languages.map(language => {
       const isPreview = language === 'preview';
       const TagElement = isPreview ? 'iframe' : 'article';
-      const srcImage = baseUrl(`assets/${language}.svg`);
+      const srcImage = baseUrl(`/assets/${language}.svg`);
       const classNameLogo = `am-logo ${isPreview ? 'thePreviewLogo' : ''}`;
       return (
         <aside class='container-one-editor'>
@@ -182,9 +166,10 @@ const languages = ['html', 'css', 'javascript', 'preview'];
       flex-direction: column;
       height: 400vh;
       scroll-snap-type: y mandatory;
+      padding-right: 1vmax;
 
-      .container-one-editor  {
-        height: 100vh;
+      .container-one-editor {
+        height: 100dvh;
         scroll-snap-align: center;
       }
     }
@@ -236,10 +221,20 @@ const languages = ['html', 'css', 'javascript', 'preview'];
         z-index: 100;
         pointer-events: none;
 
+        @media (width <= 1111px) {
+          right: 3.5vmax;
+          bottom: 3vmax;
+        }
+
         &.thePreviewLogo {
           opacity: 0;
           pointer-events: auto;
           transition: opacity 0.3s ease-in-out;
+
+          @media (width <= 1111px) {
+            opacity: 1;
+            background-color: #fff1;
+          }
         }
       }
     }

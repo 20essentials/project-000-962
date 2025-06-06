@@ -49,6 +49,13 @@ body {
   background-color: #000;
 }
 
+.monaco-editor .log-output {
+  color: lime !important;
+  font-style: italic !important;
+  user-select: none !important;
+  pointer-events: none !important;
+}
+
 @media (width <= 1111px) {
   html,
   body {
