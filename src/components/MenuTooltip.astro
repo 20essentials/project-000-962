@@ -22,11 +22,7 @@
       </g></svg
     ></label
   >
-  <li
-    style='--i:0'
-    class='circle-box circle-box-share-playlist-global'
-    title='Share Playlist'
-  >
+  <li style='--i:0' class='circle-box cb-copy-link' title='Copy Link'>
     <button class='anchor'>
       <svg class='am-svg share-icon' viewBox='0 0 24 24'>
         <path
@@ -36,7 +32,7 @@
       </svg>
     </button>
   </li>
-  <li style='--i:1' class='circle-box Download Files' title='Download'>
+  <li style='--i:1' class='circle-box cb-download-file' title='Download'>
     <button class='anchor'>
       <svg class='am-svg' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'
         ><path
@@ -46,12 +42,12 @@
       >
     </button>
   </li>
-  <li style='--i:2' class='circle-box exit' title='Exit'>
+  <li style='--i:2' class='circle-box cb-exit' title='Exit'>
     <button class='anchor'>
       <svg
         viewBox='0 0 24 24'
         fill='none'
-        class="am-svg"
+        class='am-svg'
         stroke='currentColor'
         stroke-width='2'
         stroke-linecap='round'
@@ -66,6 +62,7 @@
   <li style='--i:5' class='circle-box'><a href='#' class='anchor'></a></li>
   <li style='--i:6' class='circle-box'><a href='#' class='anchor'></a></li>
   <li style='--i:7' class='circle-box'><a href='#' class='anchor'></a></li>
+  <article class='fondin'></article>
 </aside>
 
 <style>
@@ -80,12 +77,32 @@
     font-size: 1vmax;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
-    overflow: hidden;
     zoom: 0.8;
     z-index: 500;
-    right: 0;
-    bottom: 0;
     border-radius: 50%;
+    top: 50%;
+    left: -3.3vmax;
+    transform: translateY(-50%) scaleX(-1) scaleY(-1) rotate(-45deg);
+    background-color: transparent;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+
+    &.menul-tooltip-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .fondin {
+      inset: -1.8vmax;
+      background-color: transparent;
+      content: '';
+      position: absolute;
+      transform-origin: 50% 50%;
+      border-radius: 50%;
+      z-index: -1;
+      transition: background-color 0.4s ease;
+    }
 
     .toggle {
       width: 3.91vmax;
@@ -111,17 +128,18 @@
         width: 58%;
         height: 58%;
         color: var(--theme-color);
+        transform: scaleX(-1) scaleY(-1);
       }
 
       &::before {
-        top: 18%;
-        left: 15%;
-        --size: 1vmax;
+        bottom: 9%;
+        right: 22%;
+        --size: 0.9vmax;
       }
 
       &::after {
-        top: 10%;
-        left: 30%;
+        bottom: 8%;
+        right: 40%;
         --size: 0.65vmax;
       }
 
@@ -136,6 +154,7 @@
         width: var(--size);
         height: var(--size);
         opacity: 0.3;
+        filter: blur(0.2vmax);
       }
     }
 
@@ -144,12 +163,15 @@
       visibility: hidden;
 
       &:checked + .toggle .toggle-svg {
-        transform: rotate(315deg);
+        transform: scaleX(-1) scaleY(-1) rotate(315deg);
       }
 
       &:checked ~ .circle-box {
         transform: rotate(calc(360deg / 8 * var(--i)));
         opacity: 1;
+      }
+      &:checked ~ .fondin {
+        background-color: #000;
       }
     }
 
@@ -169,7 +191,7 @@
 
       &:active {
         .anchor {
-          opacity: 0.5;
+          opacity: 0.3;
         }
       }
 
@@ -179,6 +201,7 @@
           inset -0.25vmax -0.25vmax 0.375vmax #fff7,
           0.375vmax 0.625vmax 0.5vmax #0001,
           0.5vmax 0.375vmax 0.625vmax #0001;
+        transform: scale(-1) rotate(45deg);
 
         &:hover {
           .am-svg {
@@ -193,6 +216,7 @@
           inset -0.25vmax -0.25vmax 0.375vmax #fff7,
           0.375vmax 0.625vmax 0.5vmax #0001,
           0.5vmax 0.375vmax 0.625vmax #0001;
+        transform: scale(-1);
 
         &:hover {
           .am-svg {
@@ -207,6 +231,7 @@
           inset -0.25vmax -0.25vmax 0.375vmax #fff7,
           0.375vmax 0.625vmax 0.5vmax #0001,
           0.5vmax 0.375vmax 0.625vmax #0001;
+        transform: scale(-1) rotate(45deg);
 
         &:hover {
           .am-svg {
@@ -238,7 +263,7 @@
         aspect-ratio: 1;
         background-color: transparent;
         padding: 0;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.3s ease-in-out;
 
         .am-svg {
           width: 58%;
@@ -262,3 +287,30 @@
     }
   }
 </style>
+
+<script>
+  import { $, closeOrOpenModal } from '@/utils/functions';
+  document.addEventListener('click', e => {
+    const target = e.target as HTMLElement;
+    if (target.matches('.cb-copy-link') || target.matches('.cb-copy-link *')) {
+      navigator.clipboard.writeText(window.location.href);
+      return;
+    }
+    if (
+      target.matches('.cb-download-file') ||
+      target.matches('.cb-download-file *')
+    ) {
+      alert('h');
+      return;
+    }
+    if (target.matches('.cb-exit') || target.matches('.cb-exit *')) {
+      const $modalPreview = $('.modal-preview') as HTMLElement;
+      if ($modalPreview?.classList.contains('open')) {
+        const $menuTooltip = $('.menu-tooltip');
+        $modalPreview.classList.remove('open');
+        $menuTooltip?.classList.remove('menul-tooltip-open');
+        return;
+      }
+    }
+  });
+</script>

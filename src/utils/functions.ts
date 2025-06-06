@@ -1,6 +1,6 @@
 export const $ = (el: string) => document.querySelector(el);
 export const $$ = (el: string) => document.querySelectorAll(el);
-import { encode } from "js-base64";
+import { encode } from 'js-base64';
 
 export function baseUrl(path: string) {
   return new URL(path.replace(/^\/+/, ''), import.meta.env.SITE).toString();
@@ -43,3 +43,19 @@ export function updateUrlQueries({
   window.history.replaceState(null, '', newUrl);
 }
 
+export function closeOrOpenModal() {
+  const $modalPreview = $('.modal-preview') as HTMLElement;
+  $modalPreview.innerHTML = '';
+  const $menuTooltip = $('.menu-tooltip');
+  if ($modalPreview.classList.contains('open')) {
+    $modalPreview.classList.remove('open');
+    $menuTooltip?.classList.remove('menul-tooltip-open');
+    return;
+  }
+  $modalPreview?.classList.add('open');
+  $menuTooltip?.classList.add('menul-tooltip-open');
+  const $iframe = $('.editor-preview')?.cloneNode(true) as HTMLIFrameElement;
+  if ($iframe) {
+    $modalPreview?.appendChild($iframe);
+  }
+}

@@ -6,7 +6,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
 
 <script>
   import { encode, decode } from 'js-base64';
-  import { $ } from '@/utils/functions';
+  import { $, closeOrOpenModal } from '@/utils/functions';
   import Dracula from 'monaco-themes/themes/Dracula.json';
   import * as Monaco from 'monaco-editor';
   import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
@@ -123,26 +123,19 @@ const languages = ['html', 'css', 'javascript', 'preview'];
     updateIframe();
   });
 
-  const $modalPreview = $('.modal-preview') as HTMLElement;
   window.addEventListener('keydown', e => {
     const { ctrlKey, metaKey, key } = e;
     if ((ctrlKey || metaKey) && key.toLowerCase() === 'p') {
       e.preventDefault();
-      $modalPreview.innerHTML = '';
-      if ($modalPreview.classList.contains('open')) {
-        $modalPreview.classList.remove('open');
-        return;
-      }
-      $modalPreview?.classList.add('open');
-      const $iframe = $('.editor-preview')?.cloneNode(true) as HTMLIFrameElement;
-      if ($iframe) {
-        $modalPreview?.appendChild($iframe);
-      }
+      closeOrOpenModal();
     }
 
     if (key == 'Escape') {
-      if ($modalPreview.classList.contains('open')) {
+      const $modalPreview = $('.modal-preview') as HTMLElement;
+      if ($modalPreview?.classList.contains('open')) {
+        const $menuTooltip = $('.menu-tooltip');
         $modalPreview.classList.remove('open');
+        $menuTooltip?.classList.remove('menul-tooltip-open');
         return;
       }
     }
@@ -201,6 +194,7 @@ const languages = ['html', 'css', 'javascript', 'preview'];
       outline: none;
       background-color: #000;
       overflow: hidden;
+      padding-left: 5vmax;
     }
   }
 
