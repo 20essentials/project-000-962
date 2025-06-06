@@ -19,8 +19,10 @@ const languages = ['html', 'css', 'javascript', 'preview'];
     INITIAL_CSS,
     INITIAL_HTML,
     INITIAL_JS,
-    COMMON_OPTIONS_EDITOR
+    COMMON_OPTIONS_EDITOR,
+    htmlScaffold
   } from '@/utils/consts';
+  import JSZip from 'jszip';
 
   window.MonacoEnvironment = {
     getWorker(_, label) {
@@ -82,10 +84,15 @@ const languages = ['html', 'css', 'javascript', 'preview'];
   const [htmlEditor, cssEditor, javascriptEditor] = editors;
   useEmmet(Monaco, htmlEditor);
 
+    function getValuesFromEditors() {
+    const htmlValue = htmlEditor.getValue().trim().replaceAll(/\n+/g, '\n');
+    const cssValue = cssEditor.getValue().trim().replaceAll(/\n+/g, '\n');
+    const jsValue = javascriptEditor.getValue().trim().replaceAll(/\n+/g, '\n');
+    return { htmlValue, cssValue, jsValue };
+  }
+
   function updateIframe() {
-    const htmlValue = htmlEditor.getValue().trim();
-    const cssValue = cssEditor.getValue().trim();
-    const jsValue = javascriptEditor.getValue().trim();
+    const { htmlValue, cssValue, jsValue } = getValuesFromEditors();
     updateUrlQueries({ htmlValue, cssValue, jsValue });
 
     $iframe.setAttribute(
@@ -128,6 +135,28 @@ const languages = ['html', 'css', 'javascript', 'preview'];
     const target = e.target as HTMLElement;
     if (target.matches('.thePreviewLogo')) {
       closeOrOpenModal();
+      return;
+    }
+
+      if (
+      target.matches('.cb-download-file') ||
+      target.matches('.cb-download-file *')
+    ) {
+      const { htmlValue, cssValue, jsValue } = getValuesFromEditors();
+      const zip = new JSZip();
+      zip.file('index.html', htmlScaffold(htmlValue));
+      zip.file('styles.css', cssValue);
+      zip.file('script.js', jsValue);
+
+      zip.generateAsync({ type: 'blob' }).then(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'code-of-the-project.zip';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+      return;
     }
   });
 

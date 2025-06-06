@@ -125,3 +125,20 @@ export const COMMON_OPTIONS_EDITOR: Monaco.editor.IStandaloneEditorConstructionO
     lineNumbers: 'on',
     lineNumbersMinChars: 4
   };
+
+  export const htmlScaffold = (htmlValue: string) => `<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <title>Project</title>
+      <meta name='viewport' content='width=device-width' />
+      <link rel='icon' type='image/svg+xml' href="https://20essentials.github.io/project-000-962/assets/favicon.webp" />
+      <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+      ${htmlValue}
+    <script src="script.js"></script>
+    </body>
+  </html>
+  `;
+  

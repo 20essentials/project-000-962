@@ -296,13 +296,6 @@
       navigator.clipboard.writeText(window.location.href);
       return;
     }
-    if (
-      target.matches('.cb-download-file') ||
-      target.matches('.cb-download-file *')
-    ) {
-      alert('h');
-      return;
-    }
     if (target.matches('.cb-exit') || target.matches('.cb-exit *')) {
       const $modalPreview = $('.modal-preview') as HTMLElement;
       if ($modalPreview?.classList.contains('open')) {
