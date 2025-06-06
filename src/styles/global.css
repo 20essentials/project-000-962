@@ -14,12 +14,12 @@ img {
 }
 
 :root {
-  --global-blue: dodgerblue;
   --gradient-btn: linear-gradient(
     to bottom,
-    var(--global-blue),
-    #00f,
-    var(--global-blue)
+    orange,
+    rebeccapurple,
+    dodgerblue,
+    yellow
   );
 }
 
@@ -34,7 +34,7 @@ button {
   src: url('/assets/VictorMonoNerdFont-Regular.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
-  	font-display: block;
+  font-display: block;
 }
 
 * {
@@ -46,12 +46,20 @@ body {
   height: max-content;
   width: 100%;
   flex-direction: column;
+  background-color: #000;
+}
+
+@media (width <= 1111px) {
+  html,
+  body {
+    scroll-snap-type: y mandatory;
+  }
 }
 
 body {
   --sb-track-color: #000;
   --sb-thumb-color: var(--gradient-btn);
-  --sb-size: 0.7vmax;
+  --sb-size: 0.9vmax;
 }
 
 /***************************SCROLL***************************/
@@ -66,6 +74,7 @@ body::-webkit-scrollbar-track {
 
 body::-webkit-scrollbar-thumb {
   background: var(--sb-thumb-color);
+  border-radius: 2vmax;
 }
 
 @supports not selector(::-webkit-scrollbar) {
