@@ -3,10 +3,8 @@ export const $$ = (el: string) => document.querySelectorAll(el);
 const numsKeys = ['1', '2', '3', '4'];
 const languages = ['html', 'css', 'javascript', 'preview'];
 import { encode } from 'js-base64';
-// import * as monaco from 'monaco-editor';
 
 export function baseUrl(path: string) {
-  return path;
   return new URL(path.replace(/^\/+/, ''), import.meta.env.SITE).toString();
 }
 
