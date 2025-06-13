@@ -52,7 +52,10 @@ const editorsNames = ['html', 'css', 'javascript', 'preview'];
 
   let htmlValue = htmlCodificado ? decode(htmlCodificado) : '';
   let cssValue = cssCodificado ? decode(cssCodificado) : '';
-  let jsValue = jsCodificado ? decode(jsCodificado) : '';
+  let jsValue = jsCodificado ? decode(jsCodificado) : `import CanvasConfetti from 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm';
+
+  CanvasConfetti();`;
+
   // let htmlValue = INITIAL_HTML;
   // let cssValue = INITIAL_CSS;
   // let jsValue = INITIAL_JS;
@@ -120,7 +123,7 @@ const editorsNames = ['html', 'css', 'javascript', 'preview'];
           ${cssValue}</style>
       </head>
       <body>
-        ${htmlValue}<script>${jsValue}<\/script>
+        ${htmlValue}<script type="module">${jsValue}<\/script>
       </body>
       </html>
     `
